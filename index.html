@@ -19,58 +19,127 @@
         justify-content: center;
         gap: 10px;
         margin-top: 20px;
+        perspective: 800px; /* Sets the perspective for 3D transforms */
       }
 
       .die {
         width: 64px;
         height: 64px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        border: 2px solid black;
-        margin: 5px;
         position: relative;
+        transform-style: preserve-3d; /* Necessary for 3D transforms on children */
+        margin: 10px;
+        animation: rollDice 1.5s ease-in-out forwards; /* Animation for rolling the dice */
       }
 
+      /* Styles for the six faces of the dice */
+      .die-face {
+        width: 64px;
+        height: 64px;
+        position: absolute;
+        background-color: white;
+        border: 2px solid #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+      }
+
+      /* Common styles for all dots */
       .dot {
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
+        background-color: #000;
         border-radius: 50%;
-        background-color: black;
         position: absolute;
       }
 
+      /* Positioning dots on the die faces */
+      /* Top left dot */
       .top-left {
-        top: 10px;
-        left: 10px;
+        top: 10%;
+        left: 10%;
+        transform: translate(-50%, -50%);
       }
+
+      /* Top right dot */
       .top-right {
-        top: 10px;
-        right: 10px;
+        top: 10%;
+        right: 10%;
+        transform: translate(50%, -50%);
       }
+
+      /* Bottom left dot */
+      .bottom-left {
+        bottom: 10%;
+        left: 10%;
+        transform: translate(-50%, 50%);
+      }
+
+      /* Bottom right dot */
+      .bottom-right {
+        bottom: 10%;
+        right: 10%;
+        transform: translate(50%, 50%);
+      }
+
+      /* Center dot */
       .center {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
       }
-      .bottom-left {
-        bottom: 10px;
-        left: 10px;
-      }
-      .bottom-right {
-        bottom: 10px;
-        right: 10px;
-      }
+
+      /* Middle left dot (for six face) */
       .middle-left {
         top: 50%;
-        left: 10px;
+        left: 10%;
         transform: translateY(-50%);
       }
+
+      /* Middle right dot (for six face) */
       .middle-right {
         top: 50%;
-        right: 10px;
+        right: 10%;
         transform: translateY(-50%);
+      }
+
+      /* Initial face positions */
+      .front {
+        transform: translateZ(32px); /* Moves the face to the front */
+      }
+      .back {
+        transform: rotateY(180deg) translateZ(32px); /* Rotates the face to the back */
+      }
+      .right {
+        transform: rotateY(90deg) translateZ(32px); /* Rotates the face to the right side */
+      }
+      .left {
+        transform: rotateY(-90deg) translateZ(32px); /* Rotates the face to the left side */
+      }
+      .top {
+        transform: rotateX(90deg) translateZ(32px); /* Rotates the face to the top */
+      }
+      .bottom {
+        transform: rotateX(-90deg) translateZ(32px); /* Rotates the face to the bottom */
+      }
+
+      /* Keyframes for the rolling dice animation */
+      @keyframes rollDice {
+        0% {
+          transform: rotateX(0) rotateY(0);
+        }
+        25% {
+          transform: rotateX(360deg) rotateY(0);
+        }
+        50% {
+          transform: rotateX(360deg) rotateY(360deg);
+        }
+        75% {
+          transform: rotateX(0) rotateY(360deg);
+        }
+        100% {
+          transform: rotateX(0) rotateY(0);
+        }
       }
     </style>
   </head>
@@ -81,37 +150,12 @@
       <button id="playButton">Play</button>
     </div>
 
-    <div id="diceContainer">
-      <!-- Dice will be displayed here -->
+    <div id="diceContainer" class="dice-container">
+      <!-- 3D Dice will be displayed here -->
     </div>
 
     <script>
-      function animateDice(diceCount) {
-        const diceValues = [];
-        for (let i = 0; i < diceCount; i++) {
-          diceValues.push(animateSingleDie());
-        }
-        setTimeout(() => {
-          displayDice(generateRandomNumbers(diceCount));
-        }, 1500);
-        return diceValues;
-      }
-
-      function animateSingleDie() {
-        const dieDiv = document.createElement("div");
-        dieDiv.className = "die";
-        document.getElementById("diceContainer").appendChild(dieDiv);
-        const interval = setInterval(() => {
-          dieDiv.innerHTML = getDiceHtml(Math.floor(Math.random() * 6) + 1);
-        }, 100);
-
-        setTimeout(() => {
-          clearInterval(interval);
-        }, 1500);
-
-        return dieDiv;
-      }
-
+      // JavaScript to handle dice rolling
       document
         .getElementById("playButton")
         .addEventListener("click", function () {
@@ -120,51 +164,113 @@
             10
           );
           if (numDice >= 1 && numDice <= 1000) {
-            const diceContainer = document.getElementById("diceContainer");
-            diceContainer.innerHTML = ""; // Clear previous dice
-            animateDice(numDice);
+            rollDice(numDice);
           } else {
             alert("Please enter a number between 1 and 1000.");
           }
         });
 
-      function generateRandomNumbers(numDice) {
-        const diceValues = [];
+      function rollDice(numDice) {
+        const diceContainer = document.getElementById("diceContainer");
+        diceContainer.innerHTML = ""; // Clear previous dice
+
+        // Create dice with all faces having correct patterns
         for (let i = 0; i < numDice; i++) {
-          const randomNumber = Math.floor(Math.random() * 6) + 1;
-          diceValues.push(randomNumber);
+          const die = document.createElement("div");
+          die.className = "die";
+          // Set random animation delay and duration for each die to simulate rolling
+          die.style.animation = `rollDice ${
+            1.5 + Math.random() * 0.5
+          }s ease-in-out forwards`;
+
+          // Create and append faces
+          const faceValues = [
+            "front",
+            "back",
+            "right",
+            "left",
+            "top",
+            "bottom",
+          ];
+          faceValues.forEach((faceValue, index) => {
+            const face = document.createElement("div");
+            face.className = `die-face ${faceValue}`;
+            // Assign inner HTML based on index to match face to number
+            face.innerHTML = getDiceHtml(index + 1);
+            die.appendChild(face);
+          });
+
+          // Add the die to the container
+          diceContainer.appendChild(die);
         }
-        return diceValues;
+
+        setTimeout(() => {
+          const dice = document.querySelectorAll(".die");
+          dice.forEach((die) => {
+            const randomValue = Math.floor(Math.random() * 6) + 1;
+
+            // Adjust the die to show the correct face upfront
+            die.style.transform = getRotationForValue(randomValue);
+            die.style.animation = "none"; // Stop the rolling animation
+
+            // Get the class for the face that should be on top
+            const faceClassForValue = getFaceClass(randomValue);
+            const correctFace = die.querySelector(`.${faceClassForValue}`);
+
+            // Set the dots HTML for the correct face
+            correctFace.innerHTML = getDiceHtml(randomValue);
+            console.log(randomValue);
+          });
+        }, 2000);
       }
 
-      function displayDice(diceValues) {
-        const container = document.getElementById("diceContainer");
-        container.innerHTML = ""; // Clear previous dice
-        diceValues.forEach((value) => {
-          const dieDiv = document.createElement("div");
-          dieDiv.className = "die";
-          dieDiv.innerHTML = getDiceHtml(value); // Get the HTML pattern for the die
-          container.appendChild(dieDiv);
-        });
+      function getFaceClass(num) {
+        const faceClasses = ["bottom", "front", "right", "left", "back", "top"];
+        return faceClasses[num - 1];
+      }
+
+      function getRotationForValue(value) {
+        // These rotations assume that the 'front' face initially shows the number 1
+        // and the 'back' face shows the number 6. Adjust as needed.
+        const rotations = {
+          1: "rotateY(-180deg)", // Number 1 is initially at the 'front', rotate to 'back'
+          2: "rotateY(-90deg)", // Number 2 is initially at the 'left', rotate to 'front'
+          3: "rotateX(90deg)", // Number 3 is initially at the 'bottom', rotate to 'front'
+          4: "rotateX(-90deg)", // Number 4 is initially at the 'top', rotate to 'front'
+          5: "rotateY(90deg)", // Number 5 is initially at the 'right', rotate to 'front'
+          6: "", // Number 6 is initially at the 'back', no rotation needed to show it
+        };
+        return rotations[value];
       }
 
       function getDiceHtml(value) {
+        let dotsHtml = "";
         switch (value) {
           case 1:
-            return '<div class="dot center"></div>';
+            dotsHtml = '<div class="dot center"></div>';
+            break;
           case 2:
-            return '<div class="dot top-left"></div><div class="dot bottom-right"></div>';
+            dotsHtml =
+              '<div class="dot top-left"></div><div class="dot bottom-right"></div>';
+            break;
           case 3:
-            return '<div class="dot top-left"></div><div class="dot center"></div><div class="dot bottom-right"></div>';
+            dotsHtml =
+              '<div class="dot top-left"></div><div class="dot center"></div><div class="dot bottom-right"></div>';
+            break;
           case 4:
-            return '<div class="dot top-left"></div><div class="dot top-right"></div><div class="dot bottom-left"></div><div class="dot bottom-right"></div>';
+            dotsHtml =
+              '<div class="dot top-left"></div><div class="dot top-right"></div><div class="dot bottom-left"></div><div class="dot bottom-right"></div>';
+            break;
           case 5:
-            return '<div class="dot top-left"></div><div class="dot top-right"></div><div class="dot center"></div><div class="dot bottom-left"></div><div class="dot bottom-right"></div>';
+            dotsHtml =
+              '<div class="dot top-left"></div><div class="dot top-right"></div><div class="dot center"></div><div class="dot bottom-left"></div><div class="dot bottom-right"></div>';
+            break;
           case 6:
-            return '<div class="dot top-left"></div><div class="dot top-right"></div><div class="dot middle-left"></div><div class="dot middle-right"></div><div class="dot bottom-left"></div><div class="dot bottom-right"></div>';
-          default:
-            return ""; // In case of an unexpected number
+            dotsHtml =
+              '<div class="dot top-left"></div><div class="dot top-right"></div><div class="dot middle-left"></div><div class="dot middle-right"></div><div class="dot bottom-left"></div><div class="dot bottom-right"></div>';
+            break;
         }
+        return dotsHtml;
       }
     </script>
   </body>
