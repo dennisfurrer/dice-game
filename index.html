@@ -123,22 +123,33 @@
         transform: rotateX(-90deg) translateZ(32px); /* Rotates the face to the bottom */
       }
 
-      /* Keyframes for the rolling dice animation */
       @keyframes rollDice {
         0% {
           transform: rotateX(0) rotateY(0);
         }
+        12.5% {
+          transform: rotateX(180deg) rotateY(0);
+        }
         25% {
-          transform: rotateX(360deg) rotateY(0);
+          transform: rotateX(180deg) rotateY(180deg);
+        }
+        37.5% {
+          transform: rotateX(360deg) rotateY(180deg);
         }
         50% {
           transform: rotateX(360deg) rotateY(360deg);
         }
+        62.5% {
+          transform: rotateX(540deg) rotateY(360deg);
+        }
         75% {
-          transform: rotateX(0) rotateY(360deg);
+          transform: rotateX(540deg) rotateY(540deg);
+        }
+        87.5% {
+          transform: rotateX(720deg) rotateY(540deg);
         }
         100% {
-          transform: rotateX(0) rotateY(0);
+          transform: rotateX(720deg) rotateY(720deg);
         }
       }
     </style>
@@ -206,26 +217,37 @@
 
         setTimeout(() => {
           const dice = document.querySelectorAll(".die");
+          console.log("JSON.stringify(dice, null, 2)");
+          console.log(JSON.stringify(dice, null, 2));
           dice.forEach((die) => {
             const randomValue = Math.floor(Math.random() * 6) + 1;
+
+            // Clear the innerHTML of all faces
+            // die
+            //   .querySelectorAll(".die-face")
+            //   .forEach((face) => (face.innerHTML = ""));
+
+            // Get the correct face class based on the random value and add the dots
+            const faceClass = getFaceClass(randomValue);
+            const correctFace = die.querySelector(`.${faceClass}`);
+            console.log(randomValue);
+            // console.log(JSON.stringify(die.innerHTML, null, 2));
+            console.log("before");
+            console.log(JSON.stringify(correctFace.innerHTML, null, 2));
+            correctFace.innerHTML = getDiceHtml(randomValue);
+            console.log("after");
+            console.log(JSON.stringify(correctFace.innerHTML, null, 2));
+            // console.log(JSON.stringify(die.innerHTML, null, 2));
 
             // Adjust the die to show the correct face upfront
             die.style.transform = getRotationForValue(randomValue);
             die.style.animation = "none"; // Stop the rolling animation
-
-            // Get the class for the face that should be on top
-            const faceClassForValue = getFaceClass(randomValue);
-            const correctFace = die.querySelector(`.${faceClassForValue}`);
-
-            // Set the dots HTML for the correct face
-            correctFace.innerHTML = getDiceHtml(randomValue);
-            console.log(randomValue);
           });
         }, 2000);
       }
 
       function getFaceClass(num) {
-        const faceClasses = ["bottom", "front", "right", "left", "back", "top"];
+        const faceClasses = ["front", "back", "right", "left", "top", "bottom"];
         return faceClasses[num - 1];
       }
 
@@ -233,12 +255,12 @@
         // These rotations assume that the 'front' face initially shows the number 1
         // and the 'back' face shows the number 6. Adjust as needed.
         const rotations = {
-          1: "rotateY(-180deg)", // Number 1 is initially at the 'front', rotate to 'back'
-          2: "rotateY(-90deg)", // Number 2 is initially at the 'left', rotate to 'front'
-          3: "rotateX(90deg)", // Number 3 is initially at the 'bottom', rotate to 'front'
-          4: "rotateX(-90deg)", // Number 4 is initially at the 'top', rotate to 'front'
-          5: "rotateY(90deg)", // Number 5 is initially at the 'right', rotate to 'front'
-          6: "", // Number 6 is initially at the 'back', no rotation needed to show it
+          1: "", // No rotation needed, as 1 is already at the front.
+          2: "rotateX(-90deg)", // Rotate 90 degrees on the X-axis to bring number 2 to the front.
+          3: "rotateY(90deg)", // Rotate 90 degrees on the Y-axis to bring number 3 to the front.
+          4: "rotateY(-90deg)", // Rotate -90 degrees on the Y-axis to bring number 4 to the front.
+          5: "rotateX(90deg)", // Rotate 90 degrees on the X-axis to bring number 5 to the front.
+          6: "rotateY(180deg)", // Rotate 180 degrees on the Y-axis to bring number 6 to the front.
         };
         return rotations[value];
       }
