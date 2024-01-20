@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dice Game</title>
+    <style>
+      /* Add your CSS styles here */
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+      #diceContainer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .die {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid black;
+        margin: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <label for="numDice">Number of Dice:</label>
+      <input type="number" id="numDice" min="1" max="1000" value="5" />
+      <button id="playButton">Play</button>
+    </div>
+
+    <div id="diceContainer">
+      <!-- Dice will be displayed here -->
+    </div>
+
+    <script>
+      // Add your JavaScript code here
+      document
+        .getElementById("playButton")
+        .addEventListener("click", function () {
+          const numDice = parseInt(
+            document.getElementById("numDice").value,
+            10
+          );
+          if (numDice >= 1 && numDice <= 1000) {
+            const diceValues = generateRandomNumbers(numDice);
+            displayDice(diceValues);
+          } else {
+            alert("Please enter a number between 1 and 1000.");
+          }
+        });
+
+      function generateRandomNumbers(numDice) {
+        const diceValues = [];
+        for (let i = 0; i < numDice; i++) {
+          const randomNumber = Math.floor(Math.random() * 6) + 1;
+          diceValues.push(randomNumber);
+        }
+        return diceValues;
+      }
+
+      function displayDice(diceValues) {
+        const container = document.getElementById("diceContainer");
+        container.innerHTML = ""; // Clear previous dice
+        diceValues.forEach((value) => {
+          const dieDiv = document.createElement("div");
+          dieDiv.className = "die";
+          // Add your die faces (1-6) as text or as images
+          dieDiv.textContent = value; // For simplicity, we're just showing the number
+          container.appendChild(dieDiv);
+        });
+      }
+    </script>
+  </body>
+</html>
