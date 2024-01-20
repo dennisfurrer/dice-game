@@ -82,6 +82,7 @@ function generateRandomNumbers(numDice) {
       const randomNumber = Math.floor(Math.random() * 6) + 1;
       displayDiePattern(diePatterns[`die${randomNumber}`]);
     }
+    console.log(`Rolled ${numDice} dice`)
   }
 
   animateDice(numDice);
