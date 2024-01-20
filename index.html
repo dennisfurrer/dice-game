@@ -6,11 +6,21 @@
     <title>Dice Game</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Casino", "Arial", sans-serif;
         text-align: center;
         margin: 0;
-        padding-top: 20px;
-        box-sizing: border-box;
+        padding: 0;
+        background-color: #0b6623; /* Green baize color */
+        color: #fff; /* White text color for better contrast */
+      }
+
+      .content {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.7); /* Slightly transparent background */
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
       }
 
       #diceContainer {
@@ -19,7 +29,6 @@
         justify-content: center;
         gap: 10px;
         margin-top: 20px;
-        perspective: 800px; /* Sets the perspective for 3D transforms */
       }
 
       .die {
@@ -28,33 +37,30 @@
         position: relative;
         transform-style: preserve-3d;
         margin: 10px;
-        animation: rollDice 1.5s ease-in-out forwards;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for 3D effect */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       }
 
-      /* Styles for the six faces of the dice */
       .die-face {
         width: 64px;
         height: 64px;
         position: absolute;
-        background-color: white;
-        border: 2px solid #000;
+        background-color: #000; /* Black background for the dice */
+        border: 2px solid #d4af37; /* Gold border for the dice */
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 32px;
-        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3); /* Inner shadow for depth */
-        border-radius: 10%; /* Rounded corners for dice faces */
+        border-radius: 10%;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Shadow for depth */
       }
 
-      /* Add more inner shadow to the dots for a more embossed look */
       .dot {
         width: 8px;
         height: 8px;
-        background-color: #000;
+        background-color: #d4af37; /* Gold color for dots */
         border-radius: 50%;
         position: absolute;
-        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Shadow for an embossed effect */
       }
 
       /* Positioning dots on the die faces */
@@ -191,6 +197,34 @@
         100% {
           transform: rotateX(720deg) rotateY(900deg) rotateZ(720deg);
         }
+      }
+
+      button {
+        background-color: #d4af37; /* Gold color for buttons */
+        color: #000;
+        border: none;
+        padding: 10px 20px;
+        margin-top: 20px;
+        font-size: 18px;
+        cursor: pointer;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #f1c40f; /* Lighter gold color on hover */
+      }
+
+      label {
+        margin-right: 10px;
+      }
+
+      input[type="number"] {
+        padding: 5px;
+        border-radius: 3px;
+        border: 1px solid #ddd;
+        margin-right: 10px;
       }
     </style>
   </head>
