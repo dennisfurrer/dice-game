@@ -26,9 +26,10 @@
         width: 64px;
         height: 64px;
         position: relative;
-        transform-style: preserve-3d; /* Necessary for 3D transforms on children */
+        transform-style: preserve-3d;
         margin: 10px;
-        animation: rollDice 1.5s ease-in-out forwards; /* Animation for rolling the dice */
+        animation: rollDice 1.5s ease-in-out forwards;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for 3D effect */
       }
 
       /* Styles for the six faces of the dice */
@@ -42,15 +43,18 @@
         align-items: center;
         justify-content: center;
         font-size: 32px;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3); /* Inner shadow for depth */
+        border-radius: 10%; /* Rounded corners for dice faces */
       }
 
-      /* Common styles for all dots */
+      /* Add more inner shadow to the dots for a more embossed look */
       .dot {
         width: 8px;
         height: 8px;
         background-color: #000;
         border-radius: 50%;
         position: absolute;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
       }
 
       /* Positioning dots on the die faces */
@@ -123,22 +127,69 @@
         transform: rotateX(-90deg) translateZ(32px); /* Rotates the face to the bottom */
       }
 
-      /* Keyframes for the rolling dice animation */
       @keyframes rollDice {
         0% {
-          transform: rotateX(0) rotateY(0);
+          transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+        }
+        5% {
+          transform: rotateX(36deg) rotateY(45deg) rotateZ(36deg);
+        }
+        10% {
+          transform: rotateX(72deg) rotateY(90deg) rotateZ(72deg);
+        }
+        15% {
+          transform: rotateX(108deg) rotateY(135deg) rotateZ(108deg);
+        }
+        20% {
+          transform: rotateX(144deg) rotateY(180deg) rotateZ(144deg);
         }
         25% {
-          transform: rotateX(360deg) rotateY(0);
+          transform: rotateX(180deg) rotateY(225deg) rotateZ(180deg);
+        }
+        30% {
+          transform: rotateX(216deg) rotateY(270deg) rotateZ(216deg);
+        }
+        35% {
+          transform: rotateX(252deg) rotateY(315deg) rotateZ(252deg);
+        }
+        40% {
+          transform: rotateX(288deg) rotateY(360deg) rotateZ(288deg);
+        }
+        45% {
+          transform: rotateX(324deg) rotateY(405deg) rotateZ(324deg);
         }
         50% {
-          transform: rotateX(360deg) rotateY(360deg);
+          transform: rotateX(360deg) rotateY(450deg) rotateZ(360deg);
+        }
+        55% {
+          transform: rotateX(396deg) rotateY(495deg) rotateZ(396deg);
+        }
+        60% {
+          transform: rotateX(432deg) rotateY(540deg) rotateZ(432deg);
+        }
+        65% {
+          transform: rotateX(468deg) rotateY(585deg) rotateZ(468deg);
+        }
+        70% {
+          transform: rotateX(504deg) rotateY(630deg) rotateZ(504deg);
         }
         75% {
-          transform: rotateX(0) rotateY(360deg);
+          transform: rotateX(540deg) rotateY(675deg) rotateZ(540deg);
+        }
+        80% {
+          transform: rotateX(576deg) rotateY(720deg) rotateZ(576deg);
+        }
+        85% {
+          transform: rotateX(612deg) rotateY(765deg) rotateZ(612deg);
+        }
+        90% {
+          transform: rotateX(648deg) rotateY(810deg) rotateZ(648deg);
+        }
+        95% {
+          transform: rotateX(684deg) rotateY(855deg) rotateZ(684deg);
         }
         100% {
-          transform: rotateX(0) rotateY(0);
+          transform: rotateX(720deg) rotateY(900deg) rotateZ(720deg);
         }
       }
     </style>
@@ -204,45 +255,28 @@
           diceContainer.appendChild(die);
         }
 
+        // After the rolling animation, randomly set the face of each die.
         setTimeout(() => {
           const dice = document.querySelectorAll(".die");
           dice.forEach((die) => {
+            // Randomly choose a face value between 1 and 6
             const randomValue = Math.floor(Math.random() * 6) + 1;
-
-            // Adjust the die to show the correct face upfront
-            die.style.transform = getRotationForValue(randomValue);
-            die.style.animation = "none"; // Stop the rolling animation
-
-            // Get the class for the face that should be on top
-            const faceClassForValue = getFaceClass(randomValue);
-            const correctFace = die.querySelector(`.${faceClassForValue}`);
-
-            // Set the dots HTML for the correct face
-            correctFace.innerHTML = getDiceHtml(randomValue);
             console.log(randomValue);
+
+            // Clear the previous face and set the new one
+            die.innerHTML = ""; // Remove the initial face
+            const newFace = document.createElement("div");
+            newFace.className = `die-face front`; // We'll just replace the front face
+            newFace.innerHTML = getDiceHtml(randomValue);
+            die.appendChild(newFace);
+
+            // Remove the rolling animation
+            die.style.animation = "none";
           });
-        }, 2000);
+        }, (1.5 + Math.random() * 0.5) * 1000); // This should match the duration of the rollDice animation
       }
 
-      function getFaceClass(num) {
-        const faceClasses = ["bottom", "front", "right", "left", "back", "top"];
-        return faceClasses[num - 1];
-      }
-
-      function getRotationForValue(value) {
-        // These rotations assume that the 'front' face initially shows the number 1
-        // and the 'back' face shows the number 6. Adjust as needed.
-        const rotations = {
-          1: "rotateY(-180deg)", // Number 1 is initially at the 'front', rotate to 'back'
-          2: "rotateY(-90deg)", // Number 2 is initially at the 'left', rotate to 'front'
-          3: "rotateX(90deg)", // Number 3 is initially at the 'bottom', rotate to 'front'
-          4: "rotateX(-90deg)", // Number 4 is initially at the 'top', rotate to 'front'
-          5: "rotateY(90deg)", // Number 5 is initially at the 'right', rotate to 'front'
-          6: "", // Number 6 is initially at the 'back', no rotation needed to show it
-        };
-        return rotations[value];
-      }
-
+      // The dot patterns for each face of the dice
       function getDiceHtml(value) {
         let dotsHtml = "";
         switch (value) {
