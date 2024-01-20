@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dice Game</title>
     <style>
-      /* Add your CSS styles here */
       body {
         font-family: Arial, sans-serif;
         text-align: center;
+        margin: 0;
+        padding-top: 20px;
+        box-sizing: border-box;
       }
+
       #diceContainer {
         display: flex;
         flex-wrap: wrap;
@@ -17,14 +20,57 @@
         gap: 10px;
         margin-top: 20px;
       }
+
       .die {
-        width: 50px;
-        height: 50px;
+        width: 64px;
+        height: 64px;
         display: flex;
-        align-items: center;
+        flex-direction: column;
         justify-content: center;
+        align-items: center;
         border: 2px solid black;
         margin: 5px;
+        position: relative;
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: black;
+        position: absolute;
+      }
+
+      .top-left {
+        top: 10px;
+        left: 10px;
+      }
+      .top-right {
+        top: 10px;
+        right: 10px;
+      }
+      .center {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .bottom-left {
+        bottom: 10px;
+        left: 10px;
+      }
+      .bottom-right {
+        bottom: 10px;
+        right: 10px;
+      }
+      .middle-left {
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+      }
+      .middle-right {
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
       }
     </style>
   </head>
@@ -40,7 +86,32 @@
     </div>
 
     <script>
-      // Add your JavaScript code here
+      function animateDice(diceCount) {
+        const diceValues = [];
+        for (let i = 0; i < diceCount; i++) {
+          diceValues.push(animateSingleDie());
+        }
+        setTimeout(() => {
+          displayDice(generateRandomNumbers(diceCount));
+        }, 1500);
+        return diceValues;
+      }
+
+      function animateSingleDie() {
+        const dieDiv = document.createElement("div");
+        dieDiv.className = "die";
+        document.getElementById("diceContainer").appendChild(dieDiv);
+        const interval = setInterval(() => {
+          dieDiv.innerHTML = getDiceHtml(Math.floor(Math.random() * 6) + 1);
+        }, 100);
+
+        setTimeout(() => {
+          clearInterval(interval);
+        }, 1500);
+
+        return dieDiv;
+      }
+
       document
         .getElementById("playButton")
         .addEventListener("click", function () {
@@ -49,8 +120,9 @@
             10
           );
           if (numDice >= 1 && numDice <= 1000) {
-            const diceValues = generateRandomNumbers(numDice);
-            displayDice(diceValues);
+            const diceContainer = document.getElementById("diceContainer");
+            diceContainer.innerHTML = ""; // Clear previous dice
+            animateDice(numDice);
           } else {
             alert("Please enter a number between 1 and 1000.");
           }
@@ -71,10 +143,28 @@
         diceValues.forEach((value) => {
           const dieDiv = document.createElement("div");
           dieDiv.className = "die";
-          // Add your die faces (1-6) as text or as images
-          dieDiv.textContent = value; // For simplicity, we're just showing the number
+          dieDiv.innerHTML = getDiceHtml(value); // Get the HTML pattern for the die
           container.appendChild(dieDiv);
         });
+      }
+
+      function getDiceHtml(value) {
+        switch (value) {
+          case 1:
+            return '<div class="dot center"></div>';
+          case 2:
+            return '<div class="dot top-left"></div><div class="dot bottom-right"></div>';
+          case 3:
+            return '<div class="dot top-left"></div><div class="dot center"></div><div class="dot bottom-right"></div>';
+          case 4:
+            return '<div class="dot top-left"></div><div class="dot top-right"></div><div class="dot bottom-left"></div><div class="dot bottom-right"></div>';
+          case 5:
+            return '<div class="dot top-left"></div><div class="dot top-right"></div><div class="dot center"></div><div class="dot bottom-left"></div><div class="dot bottom-right"></div>';
+          case 6:
+            return '<div class="dot top-left"></div><div class="dot top-right"></div><div class="dot middle-left"></div><div class="dot middle-right"></div><div class="dot bottom-left"></div><div class="dot bottom-right"></div>';
+          default:
+            return ""; // In case of an unexpected number
+        }
       }
     </script>
   </body>
